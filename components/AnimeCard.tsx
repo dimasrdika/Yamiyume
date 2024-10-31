@@ -9,6 +9,7 @@ interface AnimeCardProps {
   id: number;
   title: string;
   image: string;
+  synopsis?: string;
 }
 
 export default function AnimeCard({ id, title, image }: AnimeCardProps) {
