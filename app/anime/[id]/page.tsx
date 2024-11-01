@@ -1,19 +1,11 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { Suspense } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router"; // Import useRouter
-import { Checkbox } from "@/components/ui/checkbox";
+import { notFound } from "next/navigation";
+import EpisodeList from "./episode.list";
 
 interface Genre {
   mal_id: number;
   name: string;
-}
-
-interface Episode {
-  mal_id: number;
-  title: string;
 }
 
 interface Anime {
@@ -27,41 +19,25 @@ interface Anime {
   genres: Genre[];
 }
 
-export default function AnimeDetail() {
-  const router = useRouter();
-  const { id } = router.query; // Ambil id dari router query
-  const [anime, setAnime] = useState<Anime | null>(null);
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
+async function getAnime(id: string): Promise<Anime> {
+  const res = await fetch(`https://api.jikan.moe/v4/anime/${id}`);
+  if (!res.ok) throw new Error("Failed to fetch anime");
+  const data = await res.json();
+  return data.data;
+}
 
-  useEffect(() => {
-    if (id) {
-      // Pastikan id ada sebelum memanggil API
-      fetchAnimeDetails();
-      fetchEpisodes();
-    }
-  }, [id]);
+export default async function AnimeDetail({
+  params,
+}: {
+  params: { id: string };
+}) {
+  let anime: Anime;
 
-  const fetchAnimeDetails = async () => {
-    try {
-      const response = await axios.get(`https://api.jikan.moe/v4/anime/${id}`);
-      setAnime(response.data.data);
-    } catch (error) {
-      console.error("Error fetching anime details:", error);
-    }
-  };
-
-  const fetchEpisodes = async () => {
-    try {
-      const response = await axios.get(
-        `https://api.jikan.moe/v4/anime/${id}/episodes`
-      );
-      setEpisodes(response.data.data);
-    } catch (error) {
-      console.error("Error fetching episodes:", error);
-    }
-  };
-
-  if (!anime) return <div>Loading...</div>;
+  try {
+    anime = await getAnime(params.id);
+  } catch (error) {
+    notFound();
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -73,7 +49,7 @@ export default function AnimeDetail() {
             width={300}
             height={400}
             className="w-full rounded-lg shadow-lg"
-            priority // Tambahkan ini untuk optimasi loading
+            priority
           />
         </div>
         <div className="md:w-2/3">
@@ -94,16 +70,9 @@ export default function AnimeDetail() {
           </div>
           <div>
             <h3 className="text-xl font-semibold mb-2">Episodes</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {episodes.map((episode) => (
-                <div key={episode.mal_id} className="flex items-center gap-2">
-                  <Checkbox id={`episode-${episode.mal_id}`} />
-                  <label htmlFor={`episode-${episode.mal_id}`}>
-                    {episode.title}
-                  </label>
-                </div>
-              ))}
-            </div>
+            <Suspense fallback={<div>Loading episodes...</div>}>
+              <EpisodeList animeId={params.id} />
+            </Suspense>
           </div>
         </div>
       </div>

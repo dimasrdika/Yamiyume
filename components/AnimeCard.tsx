@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { MdStar } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +8,7 @@ interface AnimeCardProps {
   id: number;
   title: string;
   image: string;
-  synopsis?: string;
+  synopsis: string;
 }
 
 export default function AnimeCard({ id, title, image }: AnimeCardProps) {
@@ -18,25 +17,24 @@ export default function AnimeCard({ id, title, image }: AnimeCardProps) {
     state.favorites.includes(id)
   );
 
+  const link = `/anime/${id}`;
+
   return (
-    <div className="flex justify-center items-center p-2">
-      <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 w-48 h-72">
-        <Link href={`/anime/${id}`}>
-          <Image
-            src={image}
-            alt={title}
-            width={192}
-            height={256}
-            className="w-full h-full object-cover transition-opacity duration-300 ease-in-out hover:opacity-90"
-          />
-          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-transparent to-transparent p-2">
-            <h3 className="text-sm font-semibold text-white truncate">
-              {title}
-            </h3>
-          </div>
-        </Link>
+    <Link href={link} className="block relative group">
+      <div
+        className="bg-cover bg-center rounded-lg mb-4"
+        style={{ backgroundImage: `url(${image})`, paddingTop: "160%" }}
+      >
+        <div className="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-80 rounded-lg flex items-center justify-center">
+          <h3 className="text-white text-lg font-semibold opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-100">
+            {title}
+          </h3>
+        </div>
         <button
-          onClick={() => dispatch(toggleFavorite(id))}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent link click
+            dispatch(toggleFavorite(id));
+          }}
           className="absolute top-2 right-2 text-gray-500 hover:text-yellow-500 transition-colors"
         >
           <MdStar
@@ -44,6 +42,6 @@ export default function AnimeCard({ id, title, image }: AnimeCardProps) {
           />
         </button>
       </div>
-    </div>
+    </Link>
   );
 }
