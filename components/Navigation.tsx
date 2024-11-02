@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { MdWbSunny, MdNightlight } from "react-icons/md";
@@ -7,6 +8,11 @@ import Image from "next/image";
 
 export default function Navigation() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <nav className="bg-transparent shadow-none z-10">
@@ -27,21 +33,23 @@ export default function Navigation() {
         <div className="flex items-center gap-2">
           <Link
             href="/favorites"
-            className="hover:text-primary transition-colors text-lg" // Changed to use primary color
+            className="hover:text-primary transition-colors text-lg"
           >
             Favorites
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          >
-            {theme === "dark" ? (
-              <MdWbSunny className="h-5 w-5" />
-            ) : (
-              <MdNightlight className="h-5 w-5" />
-            )}
-          </Button>
+          {mounted && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              {theme === "dark" ? (
+                <MdWbSunny className="h-5 w-5" />
+              ) : (
+                <MdNightlight className="h-5 w-5" />
+              )}
+            </Button>
+          )}
         </div>
       </div>
     </nav>

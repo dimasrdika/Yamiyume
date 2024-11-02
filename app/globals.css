@@ -74,5 +74,8 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
-/* Global styles */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

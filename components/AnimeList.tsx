@@ -6,13 +6,6 @@ import AnimeCard from "./AnimeCard";
 import { Input } from "@/components/ui/input";
 import { Button as UIButton } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
@@ -27,7 +20,7 @@ const client = new GraphQLClient("https://graphql.anilist.co");
 const ANIME_QUERY = `
 query ($page: Int, $search: String) {
   Page(page: $page, perPage: 24) {
-    media(search: $search, sort: [SCORE_DESC]) {
+    media(search: $search, sort: [POPULARITY_DESC]) {
       id
       title {
         romaji
@@ -72,6 +65,7 @@ interface AnimeResponse {
 
 export default function AnimeList() {
   const [animes, setAnimes] = useState<Anime[]>([]);
+  const [favorites, setFavorites] = useState<number[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
@@ -85,21 +79,24 @@ export default function AnimeList() {
   const fetchAnimes = async () => {
     setIsLoading(true);
     setError(null);
-    const variables = { page, search: search || undefined }; // Use undefined for empty search
+
+    const variables = { page, search: search || undefined };
 
     try {
       const response: AnimeResponse = await client.request(
         ANIME_QUERY,
         variables
       );
+      setAnimes(response.Page.media || []);
+      setTotalPages(response.Page.pageInfo.lastPage);
       if (response.Page.media.length === 0) {
         setError("No anime found. Please try a different search.");
       }
-      setAnimes(response.Page.media);
-      setTotalPages(response.Page.pageInfo.lastPage);
     } catch (error) {
-      console.error("Error fetching animes:", error);
-      setError("Failed to fetch anime data. Please try again later.");
+      const errorMessage =
+        (error as Error).message || "Failed to fetch anime data.";
+      console.error("Error fetching animes:", errorMessage);
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -110,6 +107,18 @@ export default function AnimeList() {
     setPage(1);
     fetchAnimes();
   };
+
+  const handleToggleFavorite = (id: number) => {
+    setFavorites((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((favoriteId) => favoriteId !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+
+  const isFavorite = (id: number) => favorites.includes(id);
 
   const getPaginationItems = () => {
     const items = [];
@@ -178,7 +187,9 @@ export default function AnimeList() {
         <UIButton type="submit">Search</UIButton>
       </form>
       {isLoading ? (
-        <div className="text-center">Loading...</div>
+        <div className="flex justify-center items-center">
+          <div className="animate-spin h-8 w-8 border-4 border-t-transparent border-blue-500 rounded-full"></div>
+        </div>
       ) : error ? (
         <div className="text-red-500 text-center">{error}</div>
       ) : (
@@ -191,6 +202,8 @@ export default function AnimeList() {
                 title={anime.title.romaji}
                 image={anime.coverImage.large}
                 synopsis={anime.description}
+                onToggleFavorite={handleToggleFavorite}
+                isFavorite={isFavorite(anime.id)}
               />
             ))}
           </div>

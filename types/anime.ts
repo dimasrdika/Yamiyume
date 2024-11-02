@@ -1,4 +1,5 @@
 // types/anime.ts
+
 export interface Genre {
   mal_id: number;
   name: string;
@@ -10,10 +11,28 @@ export interface Images {
   };
 }
 
-export interface Anime {
-  mal_id: number;
+export interface CoverImage {
+  large: string;
+  small?: string;
+}
+
+export interface Episode {
+  id: number;
   title: string;
-  images: Images; // Pastikan ada properti images
+  thumbnail: string;
+  url: string;
+}
+
+export interface Anime {
+  episodes: Episode[];
+  description: string;
+  coverImage: CoverImage;
+  mal_id: number;
+  title: {
+    romaji: string;
+    english: string | null;
+  };
+  images: Images;
   genres: Genre[];
-  synopsis?: string; // Make it optional if not all anime have a synopsis
+  synopsis?: string;
 }
