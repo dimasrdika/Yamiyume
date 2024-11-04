@@ -104,7 +104,7 @@ export default function AnimeList() {
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setPage(1);
+    setPage(1); // Reset to the first page on search
     fetchAnimes();
   };
 
@@ -188,7 +188,7 @@ export default function AnimeList() {
       </form>
       {isLoading ? (
         <div className="flex justify-center items-center">
-          <div className="animate-spin h-8 w-8 border-4 border-t-transparent border-blue-500 rounded-full"></div>
+          <div className="animate-spin h-8 w-8 border-4 border-t-transparent border-primary rounded-full"></div>
         </div>
       ) : error ? (
         <div className="text-red-500 text-center">{error}</div>
