@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Inter, Noto_Sans_JP } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
-import Navigation from "@/components/Navigation";
+import { ThemeProvider } from "@/app/_components/theme-provider";
+import Navigation from "@/app/_components/Navigation";
 import { Providers } from "@/redux/provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });

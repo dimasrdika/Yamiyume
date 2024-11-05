@@ -32,7 +32,7 @@ export default function Navigation() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-10 transition-all duration-300 ${
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         isScrolled
           ? theme === "dark"
             ? "bg-gray-900"
@@ -41,7 +41,6 @@ export default function Navigation() {
       }`}
     >
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        {/* Logo Section */}
         <Link href="/" className="flex items-center text-2xl font-bold">
           <Image
             src="/logo.svg"
@@ -50,7 +49,8 @@ export default function Navigation() {
             height={32}
             className="mr-2"
           />
-          <span className="text-3xl font-title text-primary font-bold">
+          <span className="text-5xl font-logo text-primary font-bold relative">
+            <span className="absolute inset-0 text-black -z-10">Yamiyume</span>
             Yamiyume
           </span>
         </Link>

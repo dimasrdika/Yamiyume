@@ -2,7 +2,7 @@
 
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import AnimeCard from "@/components/AnimeCard";
+import AnimeCard from "@/app/_components/AnimeCard";
 import { useState, useEffect } from "react";
 import { GraphQLClient } from "graphql-request";
 import { removeFavorite } from "../../redux/slices/favoritesSlice"; // Import your removeFavorite action

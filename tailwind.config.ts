@@ -67,6 +67,7 @@ const config: Config = {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
         title: ["Noto Sans JP", "sans-serif"],
+        logo: ["Qetod", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
