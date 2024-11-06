@@ -80,7 +80,7 @@ export default function HeroBanner() {
         // Select a random anime index
         const randomIndex = Math.floor(Math.random() * data.Page.media.length);
         setCurrentAnimeIndex(randomIndex);
-      } catch (err) {
+      } catch {
         setError("Failed to load top anime. Please try again later.");
       } finally {
         setLoading(false);
