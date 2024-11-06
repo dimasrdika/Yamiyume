@@ -218,6 +218,7 @@ export default function HeroBanner() {
             <button
               onClick={() => setModalOpen(false)}
               className="absolute top-4 right-4 text-primary bg-black/50 rounded-full p-2 hover:bg-black/75 transition"
+              aria-label="Close modal"
             >
               <FaTimes className="h-6 w-6" />
             </button>

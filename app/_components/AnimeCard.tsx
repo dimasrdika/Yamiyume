@@ -20,7 +20,6 @@ export default function AnimeCard({
   title,
   image,
   synopsis,
-  genres,
   rating,
   reviews,
   season,
@@ -38,7 +37,7 @@ export default function AnimeCard({
     <Link href={link} className="block relative group">
       <div
         className="bg-cover bg-center rounded-lg mb-4"
-        style={{ backgroundImage: `url(${image})`, paddingTop: "145%" }}
+        style={{ backgroundImage: `url(${image})`, paddingTop: "150%" }}
       >
         <div className="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 ease-in-out group-hover:opacity-80 rounded-lg flex items-center justify-center p-4">
           <div className="text-white space-y-2">

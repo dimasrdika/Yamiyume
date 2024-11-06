@@ -11,8 +11,9 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata = {
-  title: "Yume Anime List",
+  title: "Yamiyume",
   description: "Explore and manage your anime collections",
+  icons: "/logo.svg",
 };
 
 export default function RootLayout({
