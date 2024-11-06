@@ -5,7 +5,9 @@ export default function Home() {
   return (
     <main className="flex min-h-screen w-full overflow-x-hidden flex-col items-center justify-between">
       <HeroBanner />
-      <AnimeList />
+      <div className="w-full">
+        <AnimeList />
+      </div>
     </main>
   );
 }

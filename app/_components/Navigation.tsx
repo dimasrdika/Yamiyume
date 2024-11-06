@@ -35,7 +35,7 @@ export default function Navigation() {
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         isScrolled
           ? theme === "dark"
-            ? "bg-gray-900"
+            ? "bg-black"
             : "bg-white shadow-lg"
           : "bg-transparent"
       }`}
@@ -49,7 +49,7 @@ export default function Navigation() {
             height={32}
             className="mr-2"
           />
-          <span className="text-5xl font-logo text-primary font-bold relative">
+          <span className="text-4xl font-logo text-primary font-bold relative">
             <span className="absolute inset-0 text-black -z-10">Yamiyume</span>
             Yamiyume
           </span>
