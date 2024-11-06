@@ -99,7 +99,7 @@ const AnimeDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center overflow-x-hidden justify-center min-h-screen">
         <div className="loader"></div>
         <style jsx>{`
           .loader {
@@ -135,7 +135,7 @@ const AnimeDetailPage = () => {
   const shortDescription = descriptionText.slice(0, 150);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-black text-white">
       {/* Hero Section with Banner */}
       <div className="relative h-96 sm:h-[70vh] md:h-[80vh]">
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent" />
@@ -146,7 +146,7 @@ const AnimeDetailPage = () => {
           objectFit="cover"
           priority
         />
-        <div className="absolute bottom-0 left-0 right-0 p-8 flex gap-8 sm:flex-col sm:gap-4 md:flex-row">
+        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-4 flex gap-6 sm:flex-col sm:gap-4 md:flex-row">
           <Image
             src={anime.coverImage.large}
             alt={anime.title.english || anime.title.romaji}
@@ -154,8 +154,8 @@ const AnimeDetailPage = () => {
             height={288}
             className="rounded-lg shadow-lg"
           />
-          <div className="flex flex-col justify-end">
-            <h1 className="text-4xl font-bold mb-2">
+          <div className="flex flex-col justify-end sm:text-center md:text-left">
+            <h1 className="text-3xl sm:text-2xl font-bold mb-2">
               {anime.title.english || anime.title.romaji}
             </h1>
             <p className="text-sm mb-4">
@@ -169,7 +169,7 @@ const AnimeDetailPage = () => {
                 </button>
               )}
             </p>
-            <div className="flex gap-4 mb-4">
+            <div className="flex gap-4 mb-4 justify-center md:justify-start">
               <span className="px-3 py-1 bg-primary rounded-full text-sm">
                 {anime.season} {anime.seasonYear}
               </span>
@@ -182,7 +182,7 @@ const AnimeDetailPage = () => {
                 </span>
               ))}
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-4 justify-center md:justify-start">
               {trailerUrl && (
                 <a
                   href={trailerUrl}
@@ -204,7 +204,7 @@ const AnimeDetailPage = () => {
       </div>
 
       {/* Episodes Section */}
-      <div className="max-w-7xl mx-auto px-8 py-12">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 py-12">
         <h2 className="text-2xl font-bold mb-6">Episodes</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {anime.streamingEpisodes.map((episode) => (

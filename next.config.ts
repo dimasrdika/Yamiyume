@@ -3,7 +3,8 @@ const nextConfig = {
   images: {
     domains: [
       "cdn.myanimelist.net", // Existing domain
-      "s4.anilist.co", // Add this line for Anilist images
+      "s4.anilist.co", // Anilist images
+      "img1.ak.crunchyroll.com", // Add Crunchyroll images
     ],
   },
   async rewrites() {
