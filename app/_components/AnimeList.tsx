@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useCallback } from "react";
 import { GraphQLClient } from "graphql-request";
 import AnimeCard from "./AnimeCard";
@@ -54,7 +53,12 @@ const genreOptions: string[] = [
   "Supernatural",
 ];
 
+interface Review {
+  summary: string;
+}
+
 interface Anime {
+  reviews: Review[];
   id: number;
   title: { romaji: string; english: string };
   coverImage: { large: string };
@@ -228,7 +232,6 @@ export default function AnimeList() {
                 synopsis={anime.description}
                 genres={anime.genres}
                 rating={anime.averageScore}
-                reviews={anime.episodes}
                 season={anime.season}
                 episodes={anime.episodes}
                 onToggleFavorite={handleToggleFavorite}

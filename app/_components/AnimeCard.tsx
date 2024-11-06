@@ -7,8 +7,7 @@ interface AnimeCardProps {
   image: string;
   synopsis: string;
   genres: string[];
-  rating: number;
-  reviews: number;
+  rating: number | null;
   season: string;
   episodes: number;
   onToggleFavorite: (id: number) => void;
@@ -21,17 +20,29 @@ export default function AnimeCard({
   image,
   synopsis,
   rating,
-  reviews,
   season,
   episodes,
   onToggleFavorite,
   isFavorite,
 }: AnimeCardProps) {
   const link = `/anime/${id}`;
+
+  // Remove HTML tags and decode HTML entities
+  const cleanSynopsis =
+    synopsis
+      ?.replace(/<[^>]*>/g, "")
+      .replace(/&quot;/g, '"')
+      .replace(/&#039;/g, "'")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">") || "No description available.";
+
   const truncatedSynopsis =
-    synopsis && synopsis.length > 200
-      ? synopsis.substring(0, 200) + "..."
-      : synopsis || "No description available.";
+    cleanSynopsis.length > 200
+      ? cleanSynopsis.substring(0, 200) + "..."
+      : cleanSynopsis;
+
+  const displayRating = rating ? (rating / 10).toFixed(1) : "N/A";
 
   return (
     <Link href={link} className="block relative group">
@@ -45,8 +56,7 @@ export default function AnimeCard({
 
             <div className="flex items-center space-x-2">
               <MdStar className="w-5 h-5 text-yellow-500" />
-              <span>{rating}</span>
-              <span>({reviews} reviews)</span>
+              <span>{displayRating}</span>
             </div>
 
             <div className="text-sm">

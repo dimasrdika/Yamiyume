@@ -21,6 +21,15 @@ query ($id: Int) {
       large
     }
     description
+    genres
+    averageScore
+    reviews {
+      nodes {
+        summary
+      }
+    }
+    season
+    episodes
   }
 }
 `;
@@ -35,6 +44,15 @@ interface Anime {
     large: string;
   };
   description: string;
+  genres: string[];
+  averageScore: number;
+  reviews: {
+    nodes: {
+      summary: string;
+    }[];
+  };
+  season: string;
+  episodes: number;
 }
 
 export default function Favorites() {
@@ -77,10 +95,14 @@ export default function Favorites() {
             key={anime.id}
             id={anime.id}
             title={anime.title.romaji}
-            image={anime.coverImage.large}
-            synopsis={anime.description}
-            onToggleFavorite={() => handleToggleFavorite(anime.id)} // Toggle favorite on click
-            isFavorite={true} // Always true in favorites page
+            image={anime.coverImage.large} // Menggunakan coverImage.large
+            synopsis={anime.description || "No synopsis available."} // Menggunakan description
+            onToggleFavorite={() => handleToggleFavorite(anime.id)}
+            isFavorite={favorites.includes(anime.id)} // Cek apakah anime ini favorite
+            genres={anime.genres || []} // Menambahkan genres
+            rating={anime.averageScore || 0} // Menambahkan rating
+            season={anime.season || "Unknown"} // Menambahkan season
+            episodes={anime.episodes || 0} // Menambahkan episodes
           />
         ))}
       </div>
