@@ -64,7 +64,7 @@ export default function HeroBanner() {
   const { theme } = useTheme();
   const [topAnime, setTopAnime] = useState<Anime[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // Error state
   const [imageLoaded, setImageLoaded] = useState(false);
   const dispatch = useDispatch();
   const favorites = useSelector((state: RootState) => state.favorites);
@@ -106,7 +106,6 @@ export default function HeroBanner() {
     );
   }
 
-  // Use the error state here
   if (error) {
     return (
       <div className="relative top-0 left-0 right-0 h-[70vh] lg:h-[80vh] flex items-center justify-center bg-background dark:bg-background rounded-lg">
