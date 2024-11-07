@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "@/redux/slices/favoritesSlice";
 import { RootState } from "@/redux/store";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useTheme } from "next-themes";
 
 // Define Axios Client URL
@@ -82,8 +82,11 @@ export default function HeroBanner() {
       // Select a random anime index
       const randomIndex = Math.floor(Math.random() * data.length);
       setCurrentAnimeIndex(randomIndex);
-    } catch (error) {
-      if (retryCount > 0) {
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        // Catch error type explicitly
+        setError("Failed to load top anime: " + error.message);
+      } else if (retryCount > 0) {
         console.log("Retrying fetch... attempts remaining:", retryCount);
         setTimeout(() => fetchTopAnime(retryCount - 1), 1000); // Retry after 1 second
       } else {
