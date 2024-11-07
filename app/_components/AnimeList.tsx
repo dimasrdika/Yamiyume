@@ -267,54 +267,26 @@ export default function AnimeList() {
           </div>
 
           {/* Pagination - Responsive */}
-          <div className="flex justify-between items-center mt-6 flex-wrap sm:flex-nowrap">
-            {/* Previous Button */}
-            <button
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-              className={`px-4 py-2 rounded-md text-sm ${
-                page === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-black hover:bg-primary"
-              }`}
-            >
-              Previous
-            </button>
 
-            {/* Pagination Numbers */}
-            <div className="flex space-x-3 items-center">
-              {getPaginationRange(page, totalPages).map((pageNumber, index) => (
-                <div key={index} className="flex items-center">
-                  {pageNumber === "..." ? (
-                    <span className="text-gray-500">...</span>
-                  ) : (
-                    <button
-                      onClick={() => setPage(pageNumber as number)}
-                      className={`px-4 py-2 rounded-md text-sm ${
-                        page === pageNumber
-                          ? "bg-primary text-white"
-                          : "bg-black hover:bg-primary"
-                      }`}
-                    >
-                      {pageNumber}
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Next Button */}
-            <button
-              onClick={() => setPage(page + 1)}
-              disabled={page === totalPages}
-              className={`px-4 py-2 rounded-md text-sm ${
-                page === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-black hover:bg-primary"
-              }`}
-            >
-              Next
-            </button>
+          <div className="flex justify-center mt-4 sm:justify-end space-x-3 items-center w-full">
+            {getPaginationRange(page, totalPages).map((pageNumber, index) => (
+              <div key={index} className="flex items-center">
+                {pageNumber === "..." ? (
+                  <span className="text-gray-500">...</span>
+                ) : (
+                  <button
+                    onClick={() => setPage(pageNumber as number)}
+                    className={`px-4 py-2 rounded-md text-sm ${
+                      page === pageNumber
+                        ? "bg-primary text-white"
+                        : "bg-black hover:bg-primary"
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </>
       )}
