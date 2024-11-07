@@ -1,6 +1,6 @@
 ![alt text](image.png)
 
-# YamiYume - Anime Trending Application
+# YamiYume - Anime List App
 
 ## Description
 
