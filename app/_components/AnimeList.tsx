@@ -4,6 +4,9 @@ import { GraphQLClient } from "graphql-request";
 import AnimeCard from "./AnimeCard";
 import { Input } from "@/components/ui/input";
 import { Button as UIButton } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleFavorite } from "@/redux/slices/favoritesSlice"; // Import the toggleFavorite action
+import { RootState } from "@/redux/store"; // Import RootState for type safety
 
 const client = new GraphQLClient("https://graphql.anilist.co");
 
@@ -79,9 +82,9 @@ interface AnimeResponse {
 }
 
 export default function AnimeList() {
+  const dispatch = useDispatch();
+  const favorites = useSelector((state: RootState) => state.favorites); // Access Redux state
   const [animes, setAnimes] = useState<Anime[]>([]);
-  const [favorites, setFavorites] = useState<number[]>([]);
-
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState("");
@@ -131,16 +134,10 @@ export default function AnimeList() {
   };
 
   const handleToggleFavorite = (id: number) => {
-    setFavorites((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((favoriteId) => favoriteId !== id);
-      } else {
-        return [...prev, id];
-      }
-    });
+    dispatch(toggleFavorite(id)); // Dispatch Redux action to toggle favorite
   };
 
-  const isFavorite = (id: number) => favorites.includes(id);
+  const isFavorite = (id: number) => favorites.includes(id); // Check if anime is a favorite
 
   const getPaginationRange = (currentPage: number, totalPages: number) => {
     let range = [];

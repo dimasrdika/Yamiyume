@@ -6,6 +6,8 @@ import AnimeCard from "@/app/_components/AnimeCard";
 import { useState, useEffect } from "react";
 import { GraphQLClient } from "graphql-request";
 import { removeFavorite } from "../../redux/slices/favoritesSlice"; // Import your removeFavorite action
+import { useRouter } from "next/navigation"; // Use next/navigation instead of next/router for app directory
+import Image from "next/image";
 
 const client = new GraphQLClient("https://graphql.anilist.co");
 
@@ -59,6 +61,13 @@ export default function Favorites() {
   const favorites = useSelector((state: RootState) => state.favorites);
   const dispatch = useDispatch();
   const [favoriteAnimes, setFavoriteAnimes] = useState<Anime[]>([]);
+  const [isClient, setIsClient] = useState(false); // Flag to check if it's client-side
+
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true); // Set the client flag to true after the component mounts
+  }, []);
 
   useEffect(() => {
     const fetchFavoriteAnimes = async () => {
@@ -84,28 +93,57 @@ export default function Favorites() {
     dispatch(removeFavorite(id)); // Dispatch the action to remove from favorites
   };
 
+  const handleGoHome = () => {
+    router.push("/"); // Navigate back to the homepage
+  };
+
+  if (!isClient) {
+    return null; // Prevent rendering content before it's on the client
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-8 font-inter">
-        Your Favorites
+    <div className="container mx-auto px-4 py-28 bg-white dark:bg-background">
+      <h1 className="text-4xl text-black dark:text-white font-bold text-center mb-8 font-inter">
+        Favorit kamu
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {favoriteAnimes.map((anime) => (
-          <AnimeCard
-            key={anime.id}
-            id={anime.id}
-            title={anime.title.romaji}
-            image={anime.coverImage.large} // Menggunakan coverImage.large
-            synopsis={anime.description || "No synopsis available."} // Menggunakan description
-            onToggleFavorite={() => handleToggleFavorite(anime.id)}
-            isFavorite={favorites.includes(anime.id)} // Cek apakah anime ini favorite
-            genres={anime.genres || []} // Menambahkan genres
-            rating={anime.averageScore || 0} // Menambahkan rating
-            season={anime.season || "Unknown"} // Menambahkan season
-            episodes={anime.episodes || 0} // Menambahkan episodes
+      {favorites.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-[60vh] text-center">
+          <Image
+            src="/frieren.png"
+            width={500}
+            height={500}
+            alt="Empty favorites"
+            className="w-96 h-96 mb-4"
           />
-        ))}
-      </div>
+          <p className="text-md font-semibold text-gray-600 dark:text-gray-300">
+            Kamu belum menambahkan anime favorite mu
+          </p>
+          <button
+            onClick={handleGoHome}
+            className="mt-4 px-6 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary-dark"
+          >
+            Kembali ke Beranda
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {favoriteAnimes.map((anime) => (
+            <AnimeCard
+              key={anime.id}
+              id={anime.id}
+              title={anime.title.romaji}
+              image={anime.coverImage.large}
+              synopsis={anime.description || "No synopsis available."}
+              onToggleFavorite={() => handleToggleFavorite(anime.id)}
+              isFavorite={favorites.includes(anime.id)}
+              genres={anime.genres || []}
+              rating={anime.averageScore || 0}
+              season={anime.season || "Unknown"}
+              episodes={anime.episodes || 0}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

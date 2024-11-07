@@ -99,8 +99,8 @@ export default function HeroBanner() {
 
   if (error) {
     return (
-      <div className="relative top-0 left-0 right-0 h-[70vh] lg:h-[80vh] flex items-center justify-center bg-black dark:bg-black rounded-lg">
-        <p className="text-center text-gray-500 dark:text-gray-400">{error}</p>
+      <div className="relative top-0 left-0 right-0 h-[70vh] lg:h-[80vh] flex items-center justify-center bg-background dark:bg-background  rounded-lg">
+        <p className="text-center text-primary dark:text-gray-400">{error}</p>
       </div>
     );
   }
@@ -154,7 +154,7 @@ export default function HeroBanner() {
       </div>
 
       {/* Content Overlay */}
-      <div className="absolute inset-x-0 bottom-10 md:bottom-auto my-16 md:top-[30%] md:-translate-y-[30%]">
+      <div className="absolute inset-x-0 bottom-10 ml-4 md:bottom-auto my-16 md:top-[30%] md:-translate-y-[30%]">
         <div className="mx-auto max-w-[1440px] px-4 lg:px-6">
           <h3 className="text-primary font-semibold text-lg md:text-xl mb-4">
             Anime Trending Saat Ini
