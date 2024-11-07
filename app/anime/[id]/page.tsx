@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { toggleFavorite } from "@/redux/slices/favoritesSlice";
-
+import Head from "next/head";
 const client = new GraphQLClient("https://graphql.anilist.co");
 
 const ANIME_QUERY = `
@@ -106,6 +106,12 @@ const AnimeDetailPage = () => {
       fetchAnimeDetail();
     }
   }, [id]);
+  useEffect(() => {
+    if (anime) {
+      document.title =
+        anime.title.english || anime.title.romaji || anime.title.native;
+    }
+  }, [anime]);
 
   if (isLoading) {
     return (
@@ -131,6 +137,12 @@ const AnimeDetailPage = () => {
 
   return (
     <main className="min-h-screen bg-white dark:bg-background overflow-x-hidden text-black dark:text-gray-200">
+      <Head>
+        <title>
+          {anime.title.english || anime.title.romaji || anime.title.native} -
+          Yamiyume
+        </title>
+      </Head>
       {/* Banner Section */}
       <div className="relative">
         {/* Banner Image */}
