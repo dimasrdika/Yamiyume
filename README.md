@@ -1,6 +1,6 @@
 ![alt text](image.png)
 
-# YamiYume - Anime Trending Application
+# YamiYume - Anime List App
 
 ## Description
 
@@ -32,3 +32,14 @@ To run **YamiYume**, you’ll need the following tools installed on your system:
    git clone https://github.com/your-username/yamiyume.git
    cd yamiyume
    ```
+
+   2. **Install Dependencies**
+
+   After navigating to the project directory, run the following command to install the required dependencies:
+
+   Using **npm**:
+   ```bash
+   npm install
+   ```bash
+   yarn install
+
