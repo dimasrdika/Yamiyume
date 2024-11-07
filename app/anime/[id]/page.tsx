@@ -273,7 +273,7 @@ const AnimeDetailPage = () => {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 mt-6">
+            <div className="flex items-center gap-4 mt-4 md:mt-6">
               {anime.trailer && (
                 <Button
                   variant="default"
