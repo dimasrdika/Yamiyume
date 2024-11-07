@@ -121,18 +121,21 @@ export default function AnimeList() {
         if (response.Page.media.length === 0) {
           setError("No anime found. Please try a different search or genre.");
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (retries > 0) {
           console.warn(`Retrying fetch... Attempts left: ${retries}`);
           setTimeout(() => fetchAnimes(retries - 1, delay * 2), delay); // Exponential backoff
         } else {
-          const errorMessage =
-            (error.message || "Failed to fetch anime data.") +
-            (error.response ? `: ${error.response.statusText}` : "");
-          setError(
-            "Network error: Failed to fetch data. Please try again later."
-          );
-          console.error("Error fetching animes:", errorMessage);
+          if (error instanceof Error) {
+            // Mengecek apakah error adalah instance dari Error
+            const errorMessage = error.message;
+            setError(
+              "Network error: Failed to fetch data. Please try again later."
+            );
+            console.error("Error fetching animes:", errorMessage);
+          } else {
+            setError("An unknown error occurred.");
+          }
         }
       } finally {
         setIsLoading(false);
@@ -241,7 +244,7 @@ export default function AnimeList() {
           <div className="animate-spin h-8 w-8 border-4 border-t-transparent border-primary rounded-full"></div>
         </div>
       ) : error ? (
-        <div className="text-red-500 text-center">{error}</div>
+        <div className="text-red-500 text-center">{error}</div> // Menampilkan error
       ) : (
         <>
           {/* Anime Cards */}

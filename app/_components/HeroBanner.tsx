@@ -106,6 +106,7 @@ export default function HeroBanner() {
     );
   }
 
+  // Use the error state here
   if (error) {
     return (
       <div className="relative top-0 left-0 right-0 h-[70vh] lg:h-[80vh] flex items-center justify-center bg-background dark:bg-background rounded-lg">
