@@ -59,16 +59,16 @@ export default function Navigation() {
         <div className="flex items-center gap-4 pt-2">
           <Link
             href="/favorites"
-            className="hover:text-primary transition-colors  text-lg leading-none" // Adjusted line height
+            className="hover:text-primary transition-colors pb-1 text-lg leading-none" // Adjusted line height
           >
-            Favorites
+            Favorit
           </Link>
           {mounted && (
             <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {theme === "dark" ? (
-                <MdWbSunny className="h-5 w-5 text-primary" />
+                <MdWbSunny className="h-5 w-5 text-primary pb-1" />
               ) : (
-                <MdNightlight className="h-5 w-5 text-primary" />
+                <MdNightlight className="h-5 w-5 text-primary pb-1" />
               )}
             </Button>
           )}
