@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { FaStar, FaPlay, FaTimes } from "react-icons/fa";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -7,13 +7,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "@/redux/slices/favoritesSlice";
 import { RootState } from "@/redux/store";
-import { GraphQLClient, gql } from "graphql-request";
+import axios from "axios";
 import { useTheme } from "next-themes";
 
-// Setup GraphQL Client
-const client = new GraphQLClient("https://graphql.anilist.co");
+// Define Axios Client URL
+const API_URL = "https://graphql.anilist.co";
 
-const query = gql`
+const query = `
   query {
     Page(page: 1, perPage: 10) {
       media(type: ANIME, sort: TRENDING_DESC) {
@@ -71,23 +71,32 @@ export default function HeroBanner() {
   const [currentAnimeIndex, setCurrentAnimeIndex] = useState<number>(0);
   const [modalOpen, setModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchTopAnime = async () => {
-      try {
-        const data = await client.request<{ Page: { media: Anime[] } }>(query);
-        setTopAnime(data.Page.media);
+  // Fetch top anime with retries
+  const fetchTopAnime = useCallback(async (retryCount = 3) => {
+    try {
+      const response = await axios.post(API_URL, { query });
+      const data = response.data.data.Page.media;
 
-        // Select a random anime index
-        const randomIndex = Math.floor(Math.random() * data.Page.media.length);
-        setCurrentAnimeIndex(randomIndex);
-      } catch {
+      setTopAnime(data);
+
+      // Select a random anime index
+      const randomIndex = Math.floor(Math.random() * data.length);
+      setCurrentAnimeIndex(randomIndex);
+    } catch (error) {
+      if (retryCount > 0) {
+        console.log("Retrying fetch... attempts remaining:", retryCount);
+        setTimeout(() => fetchTopAnime(retryCount - 1), 1000); // Retry after 1 second
+      } else {
         setError("Failed to load top anime. Please try again later.");
-      } finally {
-        setLoading(false);
       }
-    };
-    fetchTopAnime();
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchTopAnime();
+  }, [fetchTopAnime]);
 
   if (loading) {
     return (
@@ -99,7 +108,7 @@ export default function HeroBanner() {
 
   if (error) {
     return (
-      <div className="relative top-0 left-0 right-0 h-[70vh] lg:h-[80vh] flex items-center justify-center bg-background dark:bg-background  rounded-lg">
+      <div className="relative top-0 left-0 right-0 h-[70vh] lg:h-[80vh] flex items-center justify-center bg-background dark:bg-background rounded-lg">
         <p className="text-center text-primary dark:text-gray-400">{error}</p>
       </div>
     );

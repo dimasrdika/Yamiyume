@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { GraphQLClient } from "graphql-request";
 import AnimeCard from "./AnimeCard";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,7 @@ import { Button as UIButton } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFavorite } from "@/redux/slices/favoritesSlice"; // Import the toggleFavorite action
 import { RootState } from "@/redux/store"; // Import RootState for type safety
+import { useDebouncedCallback } from "use-debounce";
 
 const client = new GraphQLClient("https://graphql.anilist.co");
 
@@ -92,36 +93,53 @@ export default function AnimeList() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAnimes = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
+  // Debounced search handler
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const debouncedSearchHandler = useDebouncedCallback((value: string) => {
+    setSearch(value);
+  }, 500); // 500ms debounce time
 
-    const variables = {
-      page: page,
-      search: search || undefined,
-      genre_in: selectedGenre ? [selectedGenre] : undefined,
-    };
+  const fetchAnimes = useCallback(
+    async (retries = 3, delay = 1000) => {
+      setIsLoading(true);
+      setError(null);
 
-    try {
-      const response: AnimeResponse = await client.request(
-        ANIME_QUERY,
-        variables
-      );
-      setAnimes(response.Page.media || []);
-      setTotalPages(response.Page.pageInfo.lastPage);
+      const variables = {
+        page: page,
+        search: search || undefined,
+        genre_in: selectedGenre ? [selectedGenre] : undefined,
+      };
 
-      if (response.Page.media.length === 0) {
-        setError("No anime found. Please try a different search or genre.");
+      try {
+        const response: AnimeResponse = await client.request(
+          ANIME_QUERY,
+          variables
+        );
+        setAnimes(response.Page.media || []);
+        setTotalPages(response.Page.pageInfo.lastPage);
+
+        if (response.Page.media.length === 0) {
+          setError("No anime found. Please try a different search or genre.");
+        }
+      } catch (error: any) {
+        if (retries > 0) {
+          console.warn(`Retrying fetch... Attempts left: ${retries}`);
+          setTimeout(() => fetchAnimes(retries - 1, delay * 2), delay); // Exponential backoff
+        } else {
+          const errorMessage =
+            (error.message || "Failed to fetch anime data.") +
+            (error.response ? `: ${error.response.statusText}` : "");
+          setError(
+            "Network error: Failed to fetch data. Please try again later."
+          );
+          console.error("Error fetching animes:", errorMessage);
+        }
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      const errorMessage =
-        (error as Error).message || "Failed to fetch anime data.";
-      console.error("Error fetching animes:", errorMessage);
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [page, search, selectedGenre]);
+    },
+    [page, search, selectedGenre]
+  );
 
   useEffect(() => {
     fetchAnimes();
@@ -137,39 +155,44 @@ export default function AnimeList() {
     dispatch(toggleFavorite(id)); // Dispatch Redux action to toggle favorite
   };
 
-  const isFavorite = (id: number) => favorites.includes(id); // Check if anime is a favorite
+  // Memoize favorite status for each anime to avoid re-checking on every render
+  const isFavorite = useMemo(() => {
+    return (id: number) => favorites.includes(id); // Memoized check for favorites
+  }, [favorites]);
 
-  const getPaginationRange = (currentPage: number, totalPages: number) => {
-    let range = [];
-    if (totalPages <= 5) {
-      range = Array.from({ length: totalPages }, (_, i) => i + 1);
-    } else {
-      if (currentPage <= 3) {
-        range = [1, 2, 3, 4, 5, "...", totalPages];
-      } else if (currentPage >= totalPages - 2) {
-        range = [
-          1,
-          "...",
-          totalPages - 4,
-          totalPages - 3,
-          totalPages - 2,
-          totalPages - 1,
-          totalPages,
-        ];
+  const getPaginationRange = useMemo(() => {
+    return (currentPage: number, totalPages: number) => {
+      let range = [];
+      if (totalPages <= 5) {
+        range = Array.from({ length: totalPages }, (_, i) => i + 1);
       } else {
-        range = [
-          1,
-          "...",
-          currentPage - 1,
-          currentPage,
-          currentPage + 1,
-          "...",
-          totalPages,
-        ];
+        if (currentPage <= 3) {
+          range = [1, 2, 3, 4, 5, "...", totalPages];
+        } else if (currentPage >= totalPages - 2) {
+          range = [
+            1,
+            "...",
+            totalPages - 4,
+            totalPages - 3,
+            totalPages - 2,
+            totalPages - 1,
+            totalPages,
+          ];
+        } else {
+          range = [
+            1,
+            "...",
+            currentPage - 1,
+            currentPage,
+            currentPage + 1,
+            "...",
+            totalPages,
+          ];
+        }
       }
-    }
-    return range;
-  };
+      return range;
+    };
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-20">
@@ -182,8 +205,11 @@ export default function AnimeList() {
           <Input
             type="text"
             placeholder="Cari anime..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={debouncedSearch}
+            onChange={(e) => {
+              setDebouncedSearch(e.target.value);
+              debouncedSearchHandler(e.target.value);
+            }}
             className="w-full py-2 px-4 border rounded-md"
           />
         </div>
@@ -237,9 +263,23 @@ export default function AnimeList() {
             ))}
           </div>
 
-          {/* Pagination */}
-          <div className="flex justify-end mt-6">
-            <div className="flex items-center space-x-3">
+          {/* Pagination - Responsive */}
+          <div className="flex justify-between items-center mt-6 flex-wrap sm:flex-nowrap">
+            {/* Previous Button */}
+            <button
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+              className={`px-4 py-2 rounded-md text-sm ${
+                page === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-black hover:bg-primary"
+              }`}
+            >
+              Previous
+            </button>
+
+            {/* Pagination Numbers */}
+            <div className="flex space-x-3 items-center">
               {getPaginationRange(page, totalPages).map((pageNumber, index) => (
                 <div key={index} className="flex items-center">
                   {pageNumber === "..." ? (
@@ -250,7 +290,7 @@ export default function AnimeList() {
                       className={`px-4 py-2 rounded-md text-sm ${
                         page === pageNumber
                           ? "bg-primary text-white"
-                          : "bg-black hover:bg-primary "
+                          : "bg-black hover:bg-primary"
                       }`}
                     >
                       {pageNumber}
@@ -259,6 +299,19 @@ export default function AnimeList() {
                 </div>
               ))}
             </div>
+
+            {/* Next Button */}
+            <button
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+              className={`px-4 py-2 rounded-md text-sm ${
+                page === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-black hover:bg-primary"
+              }`}
+            >
+              Next
+            </button>
           </div>
         </>
       )}
