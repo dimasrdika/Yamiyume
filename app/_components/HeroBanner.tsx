@@ -99,7 +99,7 @@ export default function HeroBanner() {
 
   if (error) {
     return (
-      <div className="relative top-0 left-0 right-0 h-[70vh] lg:h-[80vh] flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+      <div className="relative top-0 left-0 right-0 h-[70vh] lg:h-[80vh] flex items-center justify-center bg-black dark:bg-black rounded-lg">
         <p className="text-center text-gray-500 dark:text-gray-400">{error}</p>
       </div>
     );
