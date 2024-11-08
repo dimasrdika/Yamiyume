@@ -1,45 +1,86 @@
-![alt text](image.png)
+[![./yamiyume-logo.png](./public/image.png)](https://yamiyume.vercel.app/)
 
-# YamiYume - Anime List App
+# Yamiyume - Anime List Application
 
-## Description
+This project is a web application designed for anime enthusiasts to explore, favorite, and manage their anime collections. Built using **Next.js**, **TypeScript**, **Tailwind CSS**, and the [**AniList**](https://anilist.co/), the application provides features like an anime catalog, detailed anime pages, episode browsing, and a favorites section for personalized tracking.
 
-**YamiYume** is a **React-based web application** that showcases the top trending anime. It fetches data from the **Anilist API** using GraphQL and displays detailed information about each anime, including titles, descriptions, cover images, trailers, and more. Users can mark their favorite anime, and watch trailers directly in a modal popup.
+🌍 See hosted project on Vercel: [Yamiyume](https://yamiyume.vercel.app/)
 
-### Key Features:
+# Home Page
 
-- **Trending Anime**: Displays the top trending anime based on the Anilist API.
-- **Modal for Trailers**: Play trailers of selected anime.
-- **Favorites**: Allows users to mark their favorite anime and save them to the Redux store.
-- **Responsive Layout**: Optimized for both mobile and desktop devices.
-- **Loading and Error States**: Displays loading skeletons and handles errors gracefully.
-- **Dark Mode**: Toggle between dark and light modes using `next-themes`.
+[![./homepage.png](./public/anime.png)](https://yamiyume.vercel.app/)
+
+## Features
+
+- **Anime Catalog**: Browse a wide selection of anime, with search, filter, and pagination options.
+- **Anime Detail Page**: View detailed information about each anime, including title, synopsis, genres, and episodes.
+- **Favorites Management**: Add and remove anime from a personalized favorites list.
+- **Trailer Modal**: Watch anime trailers in a modal window without leaving the application.
+- **Episode Browsing**: Explore episodes with thumbnails, each linking to available streaming sources.
+- **Responsive UI**: A modern and clean design that adapts to various screen sizes, inspired by popular streaming platforms.
+
+## Technologies Used
+
+- **Next.js**: Framework for server-side rendering and optimized performance.
+- **TypeScript**: Provides static typing for improved development and maintainability.
+- **Tailwind CSS**: Utility-first CSS framework for quick, responsive styling.
+- **AniList API**: Provides anime data and episode details using GraphQL.
+- **Redux**: Manages global state, including favorites and UI state.
+
+# Detail Page
+
+[![./detail-page.png](./public/detail-page.png)](https://yamiyume.vercel.app/anime/1)
 
 ## Installation
 
-### Prerequisites
+To run the project locally, follow these steps:
 
-To run **YamiYume**, you’ll need the following tools installed on your system:
-
-- **Node.js** (v14 or higher)
-- **npm** or **yarn**
-
-### Steps to Install and Run the Project
-
-1. **Clone the Repository**
+1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/yamiyume.git
-   cd yamiyume
+   git clone https://github.com/dimasrdika/Yamiyume.git
    ```
 
-   2. **Install Dependencies**
+2. Navigate to the project directory:
 
-   After navigating to the project directory, run the following command to install the required dependencies:
-
-   Using **npm**:
    ```bash
-   npm install
-   ```bash
-   yarn install
+   cd Yamiyume
+   ```
 
+3. Install dependencies:
+
+- If you're using npm:
+
+  ```bash
+  npm install
+  ```
+
+- If you're using yarn:
+  ```bash
+  yarn
+  ```
+
+4. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+5. Open your browser and navigate to http://localhost:3000.
+
+# Favorite Page
+
+[![./favorite-page.png](./public/favorite-page.png)](https://yamiyume.vercel.app/anime/1)
+
+## Author
+
+- [Dimas Rachmadika](https://github.com/dimasrdika)
+
+## Acknowledgments
+
+- [AniList API](https://anilist.co/)
+- [AniList GraphQL API](https://graphql.anilist.co/)
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
